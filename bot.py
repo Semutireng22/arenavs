@@ -76,6 +76,26 @@ def check_completed_tasks(wallet_address, token):
     response = requests.get(url, headers=headers)
     return response
 
+# Fungsi untuk menyimpan wallet ke file JSON
+def save_wallet(wallet_data):
+    try:
+        # Baca file JSON jika sudah ada
+        try:
+            with open("wallets.json", "r") as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            data = []
+
+        # Tambahkan wallet baru ke data
+        data.append(wallet_data)
+
+        # Simpan kembali ke file JSON
+        with open("wallets.json", "w") as file:
+            json.dump(data, file, indent=4)
+        print(f"{Fore.GREEN}Wallet berhasil disimpan di wallets.json")
+    except Exception as e:
+        print(f"{Fore.RED}Gagal menyimpan wallet: {e}")
+
 # Main program
 if __name__ == "__main__":
     # Tampilkan banner
@@ -122,6 +142,14 @@ if __name__ == "__main__":
         user_id = join_data["user"]["id"]
         
         print(f"{Fore.CYAN}Akun ke-{i + 1}: Berhasil bergabung. Wallet: {wallet_address[:12]}...")
+        
+        # Simpan wallet ke file JSON
+        wallet_data = {
+            "wallet_address": wallet_address,
+            "private_key": private_key,
+            "referral_code": referral_code
+        }
+        save_wallet(wallet_data)
         
         # Loop untuk menyelesaikan semua 4 tugas
         for task_id in range(1, 5):
