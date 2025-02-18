@@ -10,23 +10,16 @@ from fake_useragent import UserAgent
 # Inisialisasi colorama
 init(autoreset=True)
 
-# Daftar proxy dengan autentikasi (username:password)
-PROXIES = [
-    "198.23.239.134:6540:synthinks:boot2784",
-    "207.244.217.165:6712:synthinks:boot2784",
-    "107.172.163.27:6543:synthinks:boot2784",
-    "64.137.42.112:5157:synthinks:boot2784",
-    "173.211.0.148:6641:synthinks:boot2784",
-    "161.123.152.115:6360:synthinks:boot2784",
-    "23.94.138.75:6349:synthinks:boot2784",
-    "154.36.110.199:6853:synthinks:boot2784",
-    "173.0.9.70:5653:synthinks:boot2784",
-    "173.0.9.209:5792:synthinks:boot2784"
-]
+# Fungsi untuk memuat proxy dari file
+def load_proxies_from_file(file_path):
+    with open(file_path, "r") as file:
+        proxies = file.readlines()
+    return [proxy.strip() for proxy in proxies]
 
 # Fungsi untuk mendapatkan proxy secara acak
-def get_random_proxy():
-    proxy = random.choice(PROXIES)
+def get_random_proxy(file_path="proxies.txt"):
+    proxies = load_proxies_from_file(file_path)
+    proxy = random.choice(proxies)
     ip, port, user, password = proxy.split(":")
     return {
         "http": f"http://{user}:{password}@{ip}:{port}",
